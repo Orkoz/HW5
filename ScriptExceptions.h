@@ -22,9 +22,17 @@ using namespace std;
 
 #define UNEXPECTED(x)  ScriptException(x)
 
-class ScriptException // ?????????
+class ScriptException: public exception // ?????????
 {
 // Todo: complete class implementation
+public:
+	ScriptException(char* definition_string) : exception_definition_(definition_string) {}
+	virtual const char* what() const throw ()
+	{
+		return exception_definition_;
+	}
+private:
+	char* exception_definition_;
 };
 
 
