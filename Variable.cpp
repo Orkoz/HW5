@@ -6,6 +6,10 @@ using namespace std;
 
 
 
+ostream& operator<< (ostream& ro, const VarPtr& p); {
+	p.print(ro);
+	return ro;
+}
 
 
 IdxVec operator+(const IdxVec& lhs, const IdxVec& rhs)
@@ -17,4 +21,9 @@ IdxVec operator+(const IdxVec& lhs, const IdxVec& rhs)
 	for (int ii = 0;ii < resSize;++ii)
 		res[ii] += rhs[ii];
 	return res;
+}
+
+ostream & operator<<(ostream & ro, const VarPtr & p)
+{
+	// TODO: insert return statement here
 }
