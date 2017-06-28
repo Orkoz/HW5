@@ -7,51 +7,51 @@
 //* the implementation is just after declaration out of the class block.
 //*************************************************************************
 
-template <class int_var>
+template <class C>
 class MySharedPtr
 {
 
 public:
 
-    MySharedPtr(int_var* value);
+    MySharedPtr(C* value);
     MySharedPtr(const MySharedPtr& org_obj);
     ~MySharedPtr();
     MySharedPtr& operator=(const MySharedPtr& org_obj);
-    int_var& operator*();
-    int_var* operator->();
-    int_var* get();
+    C& operator*();
+    C* operator->();
+    C* get();
 
 private:
-    int_var* value_;
+    C* value_;
     int*  counter_;
 };
 
 
 //*************************************************************************
-//* Function name: MySharedPtr (int_var* value)
+//* Function name: MySharedPtr (C* value)
 //* Description: contractor by pointer.
 //* Parameters:
-//*		value – pointer to ‘int_var’ Class.
+//*		value – pointer to ‘C’ Class.
 //* Return Value: none.
 //*************************************************************************
 
-template <class int_var>
-MySharedPtr<int_var>::MySharedPtr(int_var* value): value_(value){
+template <class C>
+MySharedPtr<C>::MySharedPtr(C* value): value_(value){
     counter_ = new int;
     (*counter_) = 1;
 }
 
 
 //*************************************************************************
-//* Function name: MySharedPtr (const MySharedPtr<int_var>& org_obj)
+//* Function name: MySharedPtr (const MySharedPtr<C>& org_obj)
 //* Description: copy constractor
 //* Parameters:
-//*		org_obj – an MySharedPtr<int_var> object.
+//*		org_obj – an MySharedPtr<C> object.
 //* Return Value: none.
 //*************************************************************************
 
-template <class int_var>
-MySharedPtr<int_var>::MySharedPtr(const MySharedPtr<int_var>& org_obj): value_(org_obj.value_), counter_(counter_=org_obj.counter_){
+template <class C>
+MySharedPtr<C>::MySharedPtr(const MySharedPtr<C>& org_obj): value_(org_obj.value_), counter_(counter_=org_obj.counter_){
     (*counter_)++;
 }
 
@@ -63,8 +63,8 @@ MySharedPtr<int_var>::MySharedPtr(const MySharedPtr<int_var>& org_obj): value_(o
 //* Return Value: none.
 //*************************************************************************
 
-template <class int_var>
-MySharedPtr<int_var>::~MySharedPtr(){
+template <class C>
+MySharedPtr<C>::~MySharedPtr(){
     (*counter_)--;
     if ((*counter_) == 0){
         delete value_;
@@ -75,15 +75,15 @@ MySharedPtr<int_var>::~MySharedPtr(){
 
 //*************************************************************************
 //* Function name: operator=
-//* Description: copies one MySharedPtr<int_var> to anther and handling the case of
+//* Description: copies one MySharedPtr<C> to anther and handling the case of
 //*		dangling memories.
 //* Parameters:
-//*		org_obj – an MySharedPtr<int_var> object – the origin object
+//*		org_obj – an MySharedPtr<C> object – the origin object
 //* Return Value: none.
 //*************************************************************************
 
-template <class int_var>
-MySharedPtr<int_var>& MySharedPtr<int_var>::operator=(const MySharedPtr& org_obj){
+template <class C>
+MySharedPtr<C>& MySharedPtr<C>::operator=(const MySharedPtr& org_obj){
     if (this != &org_obj){
         (*counter_)--;
         if ((*counter_) == 0){
@@ -100,39 +100,39 @@ MySharedPtr<int_var>& MySharedPtr<int_var>::operator=(const MySharedPtr& org_obj
 
 //*************************************************************************
 //* Function name: operator*
-//* Description: returns the MySharedPtr<int_var> object value.
+//* Description: returns the MySharedPtr<C> object value.
 //* Parameters: none.
-//* Return Value: an int_var class reference.
+//* Return Value: an C class reference.
 //*************************************************************************
 
-template <class int_var>
-int_var& MySharedPtr<int_var>::operator*() {
+template <class C>
+C& MySharedPtr<C>::operator*() {
     return *value_;
 }
 
 
 //*************************************************************************
 //* Function name: operator->
-//* Description: returns the MySharedPtr<int_var> object value ponter.
+//* Description: returns the MySharedPtr<C> object value ponter.
 //* Parameters: none.
-//* Return Value: an int_var class pointer.
+//* Return Value: an C class pointer.
 //*************************************************************************
 
-template <class int_var>
-int_var* MySharedPtr<int_var>::operator->() {
+template <class C>
+C* MySharedPtr<C>::operator->() {
     return value_;
 }
 
 
 //*************************************************************************
 //* Function name: get
-//* Description: returns the MySharedPtr<int_var> object value ponter.
+//* Description: returns the MySharedPtr<C> object value ponter.
 //* Parameters: none.
-//* Return Value: an int_var class pointer.
+//* Return Value: an C class pointer.
 //*************************************************************************
 
-template <class int_var>
-int_var* MySharedPtr<int_var>::get() {
+template <class C>
+C* MySharedPtr<C>::get() {
     return value_;
 }
 
