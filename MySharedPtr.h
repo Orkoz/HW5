@@ -1,6 +1,8 @@
 #ifndef _MY_SHARED_PTR_H_
 #define _MY_SHARED_PTR_H_
 #include<ostream>
+#include "Variable.h"
+
 
 //*************************************************************************
 //* implementing a generic pointer class.
@@ -144,6 +146,10 @@ C* MySharedPtr<C>::get() {
     return value_;
 }
 
+template <class C>
+ostream& operator<< (ostream& ro,  const MySharedPtr<C>& p) {
+    return ro << (*p);
+}
 
 
 
