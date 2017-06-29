@@ -250,12 +250,19 @@ int & Scalar::operator[](int idx) const
 	}
 }
 
-////////////////////////////////////////////////
 int & Scalar::operator[](IdxVec v) const
+{
+	if ((v[0] != 1) && (v[1] != 1))
+		throw INDEX_OUT_OF_RANGE;
+	int i = val_;
+	return i;
+}
+
+int & Scalar::operator[](IdxVec v)
 {
 	if ((v[0] != 1) && (v[1] != 1))
 		throw INDEX_OUT_OF_RANGE;
 	return val_;
 }
-//////////////////////////////////////////////
+
 

@@ -55,6 +55,7 @@ public:
 
 	virtual int& operator[](int idx) const  ;
 	virtual int& operator[](IdxVec v) const  ;
+	virtual int& operator[](IdxVec v) ;
 
 	virtual VarPtr Conv(VarPtr rhs) const;
 
