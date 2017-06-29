@@ -1,6 +1,6 @@
 #ifndef _MY_SHARED_PTR_H_
 #define _MY_SHARED_PTR_H_
-
+#include<ostream>
 
 //*************************************************************************
 //* implementing a generic pointer class.
@@ -13,6 +13,7 @@ class MySharedPtr
 
 public:
 
+    MySharedPtr();
     MySharedPtr(C* value);
     MySharedPtr(const MySharedPtr& org_obj);
     ~MySharedPtr();
@@ -26,6 +27,13 @@ private:
     int*  counter_;
 };
 
+
+template <class C>
+MySharedPtr<C>::MySharedPtr(){
+    value_ = 0;
+    counter_ = new int;
+    (*counter_) = 0;
+}
 
 //*************************************************************************
 //* Function name: MySharedPtr (C* value)
@@ -66,7 +74,7 @@ MySharedPtr<C>::MySharedPtr(const MySharedPtr<C>& org_obj): value_(org_obj.value
 template <class C>
 MySharedPtr<C>::~MySharedPtr(){
     (*counter_)--;
-    if ((*counter_) == 0){
+    if ((*counter_) <= 0){
         delete value_;
         delete counter_;
     }
@@ -86,7 +94,7 @@ template <class C>
 MySharedPtr<C>& MySharedPtr<C>::operator=(const MySharedPtr& org_obj){
     if (this != &org_obj){
         (*counter_)--;
-        if ((*counter_) == 0){
+        if ((*counter_) <= 0){
             delete value_;
             delete counter_;
         }
@@ -135,6 +143,7 @@ template <class C>
 C* MySharedPtr<C>::get() {
     return value_;
 }
+
 
 
 
