@@ -6,8 +6,8 @@ using namespace std;
 
 
 
-ostream& operator<< (ostream& ro, const VarPtr& p) {
-	p.print(ro);
+ostream& operator<< (ostream& ro, const Variable& p) {
+	p.Print(ro);
 	return ro;
 }
 

@@ -2,17 +2,27 @@
 #define _SCALAR_H_
 
 #include"Variable.h"
+#include"Matrix.h"
 
-class Scalar : public Variable // ????????
+class Scalar : public Variable 
 {
 public:
 
-	// ToDo: complete class definition
-
+	Scalar();
 	Scalar(int val);
 	~Scalar();
 
-	virtual VarPtr Copy() const  ;
+	VarPtr Size() const;
+	VarPtr Size(int d) const;
+	VarPtr Copy() const;
+	VarPtr NumElems() const;
+	virtual VarPtr Transpose() const;
+
+	virtual void Print(ostream& ro) const;
+
+
+
+
 
 	virtual VarPtr operator+(const Variable&) const  ;
 	virtual VarPtr operator+(const Scalar&) const  ;
@@ -42,17 +52,6 @@ public:
 	virtual VarPtr operator||(const Scalar&) const  ;
 	virtual VarPtr operator||(const Matrix&) const  ;
 
-	virtual VarPtr NumElems() const  ;
-	virtual VarPtr Size() const  ;
-	virtual VarPtr Size(int dim) const  ;
-	virtual VarPtr Transpose() const  ;
-	/////// printing << ??
-	virtual VarPtr Print(ostream& ro) const  ;
-
-	//virtual void variable(or Scalar Or Matrix)::print(ostream& ro) const { ///////will be added to scalar and matrix
-	//	ro << "ID: " << id_;
-	//	if (name_) ro << " Name: " << name_;
-	//}
 
 	virtual int& operator[](int idx) const  ;
 	virtual int& operator[](IdxVec v) const  ;
