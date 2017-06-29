@@ -2,7 +2,7 @@
 #define _VARIABLES_MAP_H_
 #define VALID_VAR_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
 
-#include "Variable.h"
+//#include "Variable.h"
 #include "MySharedPtr.h"
 #include <map>
 #include <vector>
@@ -10,6 +10,7 @@
 #include <string>
 #include <list>
 
+typedef MySharedPtr<int> VarPtr;
 using namespace std;
 
 
@@ -20,7 +21,7 @@ public:
     void SetSavedName(const string& newSavedName);
     string& GetTmpVariable();
     void ClearTmpVars();
-    VarPtr Operator(const string& x);
+    VarPtr& operator[](const string& x);
     VarPtr& at(const string& x);
     void erase(const string& x);
 
