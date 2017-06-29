@@ -26,9 +26,9 @@ VariablesMap::VariablesMap(){
 //*************************************************************************
 
 VariablesMap::~VariablesMap() {
-    delete SavedName_;
-    delete valid_chars_;
-    delete StringToVarMap_;
+    SavedName_.clear();
+    valid_chars_.clear();
+    StringToVarMap_.clear();
 }
 
 
@@ -41,8 +41,8 @@ VariablesMap::~VariablesMap() {
 //*************************************************************************
 
 void VariablesMap::SetSavedName(const string& newSavedName) {
-    delete SavedName_;
-    string SavedName_ = newSavedName;
+    SavedName_.clear();
+    SavedName_ = newSavedName;
 }
 
 
@@ -59,23 +59,35 @@ void VariablesMap::SetSavedName(const string& newSavedName) {
 //* in the end go throw al the one or two characters combination that following the valid name rules.
 //*************************************************************************
 
-string& VariablesMap::GetTmpVariable() {
-    string tmp_name = "";
+string VariablesMap::GetTmpVariable() {
+    string tmp_name;
+    char c= 'Z';
     for (int j = 0; j < valid_chars_.length(); ++j) {
-        if (valid_chars_[j] >= 'a' && valid_chars_[j] <= 'Z'){
+        if ((valid_chars_[j] >= 'a')){
             for (int z = 0; z < valid_chars_.length(); ++z) {
-                tmp_name = valid_chars_[j] + valid_chars_[z];
-                map<string, VarPtr>::iterator it = StringToVarMap_.find(tmp_name);
-                if (it == StringToVarMap_.end() && tmp_name != SavedName_){
+                bool move_on = false;
+                tmp_name += valid_chars_[z];
+                list<string>::iterator it_list = tmpVarList_.begin();
+                if (it_list == tmpVarList_.end()){
                     tmpVarList_.push_back(tmp_name);
                     return tmp_name;
+                }
+                for (; it_list != tmpVarList_.end(); ++it_list){
+                    if (*it_list == tmp_name || tmp_name == SavedName_)
+                            move_on = true;
+
+                    if (!move_on) {
+                        tmpVarList_.push_back(tmp_name);
+                        return tmp_name;
+                        }
+                    }
                 }
                 tmp_name = valid_chars_[j];
             }
         }
+    throw INVALID_VAR_NAME(tmp_name);
     }
-    return (string &) NULL;
-}
+
 
 
 //*************************************************************************
@@ -106,31 +118,29 @@ void VariablesMap::ClearTmpVars() { //*uses ‘map’ and ‘list’ functions.
 //* Return Value: VarPtr reference.
 //*************************************************************************
 
-VarPtr VariablesMap::Operator(const string& x) {
+VarPtr& VariablesMap::operator[](const string& x) {
     bool valid;
-    if (x[0] < 'a' || x[0] > 'Z'){
-        throw INVALID_VAR_NAME;
-    }
+    if (x[0] < 'a')
+        throw INVALID_VAR_NAME(x);
 
-    if (x == SavedName_){
-        throw INVALID_VAR_NAME;
-    }
+    if (x == SavedName_)
+        throw INVALID_VAR_NAME(x);
 
-    for (int i = 1; i < x.length() ; ++i) {
+
+    for (int i = 0; i < x.length() ; ++i) {
         valid = false;
         for (int j = 0; j < valid_chars_.length(); ++j) {
             if (valid_chars_[j] == x[i]){
                 valid = true;
+                break;
             }
         }
         if (!valid){
-            throw INVALID_VAR_NAME;
+            throw INVALID_VAR_NAME(x);
         }
     }
 
-    VarPtr NewVar;
-    StringToVarMap_[x] = NewVar;
-    return NewVar;
+    return StringToVarMap_[x] = *(new VarPtr);;
 }
 
 
@@ -146,7 +156,7 @@ VarPtr& VariablesMap::at(const string &x) {
     map<string, VarPtr>::iterator it_map;
     it_map = StringToVarMap_.find(x);
     if (it_map == StringToVarMap_.end()) {
-        throw INVALID_VAR_NAME;
+        throw std::out_of_range ("blah");
     }
     return it_map->second;
 }

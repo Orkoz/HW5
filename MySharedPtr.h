@@ -1,5 +1,7 @@
 #ifndef _MY_SHARED_PTR_H_
 #define _MY_SHARED_PTR_H_
+#include<ostream>
+#include "Variable.h"
 
 
 //*************************************************************************
@@ -13,6 +15,7 @@ class MySharedPtr
 
 public:
 
+    MySharedPtr();
     MySharedPtr(C* value);
     MySharedPtr(const MySharedPtr& org_obj);
     ~MySharedPtr();
@@ -26,6 +29,13 @@ private:
     int*  counter_;
 };
 
+
+template <class C>
+MySharedPtr<C>::MySharedPtr(){
+    value_ = 0;
+    counter_ = new int;
+    (*counter_) = 0;
+}
 
 //*************************************************************************
 //* Function name: MySharedPtr (C* value)
@@ -66,7 +76,7 @@ MySharedPtr<C>::MySharedPtr(const MySharedPtr<C>& org_obj): value_(org_obj.value
 template <class C>
 MySharedPtr<C>::~MySharedPtr(){
     (*counter_)--;
-    if ((*counter_) == 0){
+    if ((*counter_) <= 0){
         delete value_;
         delete counter_;
     }
@@ -86,7 +96,7 @@ template <class C>
 MySharedPtr<C>& MySharedPtr<C>::operator=(const MySharedPtr& org_obj){
     if (this != &org_obj){
         (*counter_)--;
-        if ((*counter_) == 0){
+        if ((*counter_) <= 0){
             delete value_;
             delete counter_;
         }
@@ -134,6 +144,11 @@ C* MySharedPtr<C>::operator->() {
 template <class C>
 C* MySharedPtr<C>::get() {
     return value_;
+}
+
+template <class C>
+ostream& operator<< (ostream& ro,  const MySharedPtr<C>& p) {
+    return ro << (*p);
 }
 
 

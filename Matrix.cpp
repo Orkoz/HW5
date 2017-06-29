@@ -1,16 +1,150 @@
 #include"Matrix.h"
 #include"ScriptExceptions.h"
+using namespace std;
 
 
+//*************************************************************************
+//* Function name: Constructor by Value
+//* Description: initialized new matrix(rowXcol) with val
+//* Parameters:
+//*		row – the number of rows in the new matrix.
+//*		col – the number of columns in the new matrix.
+//*		val – the value in each cell of the new matrix.
+//* Return Value: Matrix pointer.
+//*************************************************************************
 
-VarPtr Matrix::Conv(VarPtr rhs) const
-{
+Matrix::Matrix(int row, int col, int val) : row_(row), col_(col){
+	matrix_ = new int*[row_];
+	for (int i = 0; i < row_; i++) {
+		matrix_[i] = new int[col_];
+		for (int j = 0; j < col_; j++)
+			matrix_[i][j] = (val);
+	}
+}
+
+
+//*************************************************************************
+//* Function name: Constructor by Value
+//* Description: initialized new matrix(1XendVal - startVal) with startVal in the first cell increasing in 1 for each cell to the end.
+//* Parameters:
+//*		startVal – start value.
+//*		endVal – end value.
+//* Return Value: Matrix pointer.
+//*************************************************************************
+
+Matrix::Matrix(int startVal, int endVal) : row_(1), col_ (endVal - startVal + 1) {
+	matrix_ = new int*[row_];
+	int val = startVal;
+	for (int i = 0; i < row_; i++, val++) {
+		matrix_[i] = new int[col_];
+		matrix_[row_][i] = val;
+	}
+}
+
+
+//*************************************************************************
+//* Function name: Copy Constructor
+//* Description:
+//* Parameters:
+//*		org_mat– the original Matrix.
+//* Return Value: Matrix pointer.
+//*************************************************************************
+
+Matrix::Matrix(const Matrix& org_mat) :row_(org_mat.row_), col_(org_mat.col_){
+    matrix_ = new int*[row_];
+	for (int i = 0; i < row_; i++) {
+		matrix_[i] = new int[col_];
+		for (int j = 0; j < col_; j++)
+			matrix_[i][j] = org_mat.matrix_[i][j];
+	}
+}
+
+
+//*************************************************************************
+//* Function name: Destructor
+//* Description:
+//* Parameters: none.
+//* Return Value: none.
+//*************************************************************************
+
+Matrix::~Matrix() {
+	delete[] matrix_;
+}
+
+
+//*************************************************************************
+//* Function name: Copy
+//* Description: creates a copy of the Matrix.
+//* Parameters: none.
+//* Return Value: MySharedPtr<Variable> object containing the new Matrix.
+//*************************************************************************
+
+VarPtr Matrix::Copy() const {
+    return VarPtr(new Matrix(*this));
+}
+
+
+//*************************************************************************
+//* Function name: NumElems
+//* Description: returns the number of cells in the Matrix.
+//* Parameters: none.
+//* Return Value: MySharedPtr<Variable> object containing Scaler object with the value.
+//*************************************************************************
+
+VarPtr Matrix::NumElems() const {
+    int num = row_ * col_;
+	return VarPtr(new Scalar(num));
+}
+
+
+//*************************************************************************
+//* Function name: Size
+//* Description: returns matrix(1X2) with the rows size at the first cell and the columns size  //*		in the second.
+//* Parameters: none.
+//* Return Value: MySharedPtr<Variable> object containing Matrix object with the values.
+//*************************************************************************
+
+VarPtr Matrix::Size() const {
+	Matrix* new_matrix = new Matrix(1, 2, 0);
+	new_matrix->matrix_[0][0] = row_;
+	new_matrix->matrix_[0][0] = col_;
+	return VarPtr(new_matrix);
+}
+
+
+//*************************************************************************
+//* Function name: Size
+//* Description: returns the size of the given dimension.
+//* Parameters:
+//*		dim – the dimension that its size will be returned.
+//* Return Value: MySharedPtr<Variable> object containing Scalar object with the value.
+//*************************************************************************
+
+VarPtr Matrix::Size(int dim) const {
+    if (dim == 1) {
+        return VarPtr(new Scalar(row_));
+    }else if (dim == 2){
+        return VarPtr(new Scalar(col_));
+    }
+
+    throw BAD_INPUT;
+}
+
+
+//*************************************************************************
+//* Function name: Scalar::Conv
+//* Description: Given by the staff of the course.
+//* Parameters:
+//* Return Value:
+//*************************************************************************
+
+VarPtr Matrix::Conv(VarPtr rhs) const {
 	if ((*NumElems())[1] == 0)
 		return VarPtr(new Matrix(*this));
 	if ((*(rhs->NumElems()))[1] == 0)
-		return VarPtr(new Matrix(rows_, cols_, 0));
+		return VarPtr(new Matrix(row_, col_, 0));
 
-	VarPtr pRet = VarPtr(new Matrix(rows_, cols_, 0));
+	VarPtr pRet = VarPtr(new Matrix(row_, col_, 0));
 	VarPtr rhsSize = rhs->Size();
 	int rhsRows = (*rhsSize)[1], rhsCols = (*rhsSize)[2];
 	IdxVec rhsCenter = { (rhsRows / 2) + 1,(rhsCols / 2) + 1 };
@@ -18,8 +152,8 @@ VarPtr Matrix::Conv(VarPtr rhs) const
 	int minRowShift = 1 - rhsCenter[0];
 	int maxColShift = rhsCols - rhsCenter[1];
 	int minColShift = 1 - rhsCenter[1];
-	for (int resRow = 1; resRow <= rows_; ++resRow)
-		for (int resCol = 1; resCol <= cols_; ++resCol)
+	for (int resRow = 1; resRow <= row_; ++resRow)
+		for (int resCol = 1; resCol <= col_; ++resCol)
 		{
 			IdxVec resIdx = { resRow,resCol };
 			for (int rowShift = minRowShift; rowShift <= maxRowShift; ++rowShift)
@@ -37,3 +171,308 @@ VarPtr Matrix::Conv(VarPtr rhs) const
 		}
 	return pRet;
 }
+
+
+//*************************************************************************
+//* Function name: Transpose
+//* Description: creates a transposed copy of the Matrix.
+//* Parameters: none.
+//* Return Value: MySharedPtr<Variable> object containing the new Matrix.
+//*************************************************************************
+
+VarPtr Matrix::Transpose() const {
+	Matrix* tranpose_matrix = new Matrix(row_, col_, 0);
+	for (int i = 0; i < row_; i++)
+		for (int j = 0; j < col_; j++)
+            tranpose_matrix->matrix_[j][i] = matrix_[i][j];
+
+	return VarPtr(tranpose_matrix);
+}
+
+
+//*************************************************************************
+//* Function name: Print
+//* Description: prints the matrix cell on the screen on a ‘matrix’ formation.
+//* Parameters:
+//*		ro – an ostream object.
+//* Return Value: none.
+//*************************************************************************
+
+void Matrix::Print(ostream &ro) const {
+	for (int i = 0; i < row_; i++) {
+		for (int j = 0; j < col_; j++)
+			ro << matrix_[i][j] << " ";
+		ro << "\n";
+	}
+}
+
+
+//*************************************************************************
+//* Function name: operator[]
+//* Description: returns the value of the given index by column major.
+//* Parameters:
+//*		idx – given index by column major.
+//* Return Value: the value of the cell.
+//*************************************************************************
+
+int& Matrix::operator[](int idx) {
+	if ((col_*row_) < idx || idx < 1){
+		throw INDEX_OUT_OF_RANGE;
+	}
+	int row = row_ / idx; // row_ mod idx;
+	int col = idx - row*col_ - 1;
+	return matrix_[row][col];
+
+}
+
+const int& Matrix::operator[](int idx) const {
+    if ((col_*row_) < idx || idx < 1){
+        throw INDEX_OUT_OF_RANGE;
+    }
+    int row = row_ / idx; // row_ mod idx;
+    int col = idx - row*col_ - 1;
+    return matrix_[row][col];
+
+}
+
+
+//*************************************************************************
+//* Function name: operator[]
+//* Description: returns the value of the given index.
+//* Parameters:
+//*		v – a vector of matrix indices.
+//* Return Value: the value of the cell.
+//*************************************************************************
+
+int& Matrix::operator[](IdxVec v) {
+	if (v.size() != 2 || v[0] > row_ || v[0] <1 || v[1] > col_ || v[1] < 1){
+		throw INDEX_OUT_OF_RANGE;
+	}
+	
+	return matrix_[v[0]][v[1]];
+}
+
+const int& Matrix::operator[](IdxVec v) const {
+    if (v.size() != 2 || v[0] > row_ || v[0] <1 || v[1] > col_ || v[1] < 1){
+        throw INDEX_OUT_OF_RANGE;
+    }
+
+    return matrix_[v[0]][v[1]];
+}
+
+
+//*************************************************************************
+//* Function name: operator+
+//* Description: handles adding numbers. dealing separately with adding
+//*              scalar and scalar (sends for operator from class matrix),
+//*              scalar and matrix or scalar and variable (changes the
+//*              order so the dynamic type could take control).
+//* Parameters: variables to be added
+//* Return Value: the new scalar or matrix
+//*************************************************************************
+
+VarPtr Matrix::operator+(const Variable& variable) const{
+    VarPtr new_obj = variable.Copy();
+    return *(new_obj.get()) + *this;
+}
+VarPtr Matrix::operator+(const Scalar& scalar) const{
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = matrix_[i][j] + scalar.get();
+
+    return VarPtr(new_matrix);
+}
+VarPtr Matrix::operator+(const Matrix& matrix) const{
+    if (row_ != matrix.row_ || col_ != matrix.col_)
+        throw BAD_MAT_DIMS("+");
+
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = matrix_[i][j] + matrix.matrix_[i][j];
+
+    return VarPtr(new_matrix);
+}
+
+
+//*************************************************************************
+//* Function name: operator*
+//* Description: handles multiplication numbers. dealing separately with adding
+//*              scalar and scalar (sends for operator from class matrix),
+//*              scalar and matrix or scalar and variable (changes the
+//*              order so the dynamic type could take control).
+//* Parameters: variables to be added
+//* Return Value: the new scalar or matrix
+//*************************************************************************
+
+VarPtr Matrix::operator*(const Variable& variable) const{
+    VarPtr new_obj = variable.Copy();
+    return *(new_obj.get()) + *this;
+}
+VarPtr Matrix::operator*(const Scalar& scalar) const{
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = matrix_[i][j] * scalar.get();
+
+    return VarPtr(new_matrix);
+}
+VarPtr Matrix::operator*(const Matrix& matrix) const{
+    if (col_ != matrix.row_)
+        throw BAD_MAT_PROD;
+
+    Matrix* new_matrix = new Matrix(row_, matrix.col_, 0);
+    for (int k = 0; k < row_; ++k) {
+        for (int i = 0; i <  matrix.col_; i++) {
+            int mul_sum = 0;
+            for (int j = 0; j < col_; j++)
+                mul_sum = mul_sum + matrix_[k][j] + matrix.matrix_[j][i];
+            new_matrix->matrix_[k][i] = mul_sum;
+        }
+    }
+
+    return VarPtr(new_matrix);
+}
+
+
+//*************************************************************************
+//* Function name: operator<
+//* Description: handles logic <. dealing separately with adding
+//*              scalar and scalar (sends for operator from class matrix),
+//*              scalar and matrix or scalar and variable (changes the
+//*              order so the dynamic type could take control).
+//* Parameters: variables to be added
+//* Return Value: the new scalar or matrix
+//*************************************************************************
+
+VarPtr Matrix::operator<(const Variable& variable) const{
+    VarPtr new_obj = variable.Copy();
+    return *(new_obj.get()) + *this;
+}
+VarPtr Matrix::operator<(const Scalar& scalar) const{
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]<scalar.get());
+
+    return VarPtr(new_matrix);
+}
+VarPtr Matrix::operator<(const Matrix& matrix) const{
+    if (row_ != matrix.row_ || col_ != matrix.col_)
+        throw BAD_MAT_DIMS("> / <");
+
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = (matrix_[i][j] < matrix.matrix_[i][j]);
+
+    return VarPtr(new_matrix);
+}
+
+
+//*************************************************************************
+//* Function name: operator>
+//* Description: handles logic >. dealing separately with adding
+//*              scalar and scalar (sends for operator from class matrix),
+//*              scalar and matrix or scalar and variable (changes the
+//*              order so the dynamic type could take control).
+//* Parameters: variables to be added
+//* Return Value: the new scalar or matrix
+//*************************************************************************
+
+VarPtr Matrix::operator>(const Variable& variable) const{
+    VarPtr new_obj = variable.Copy();
+    return *(new_obj.get()) + *this;
+}
+VarPtr Matrix::operator>(const Scalar& scalar) const{
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]>scalar.get());
+
+    return VarPtr(new_matrix);
+}
+VarPtr Matrix::operator>(const Matrix& matrix) const{
+    if (row_ != matrix.row_ || col_ != matrix.col_)
+        throw BAD_MAT_DIMS("> / <");
+
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = (matrix_[i][j] > matrix.matrix_[i][j]);
+
+    return VarPtr(new_matrix);
+}
+
+
+//*************************************************************************
+//* Function name: operator==
+//* Description: handles logic ==. dealing separately with adding
+//*              scalar and scalar (sends for operator from class matrix),
+//*              scalar and matrix or scalar and variable (changes the
+//*              order so the dynamic type could take control).
+//* Parameters: variables to be added
+//* Return Value: the new scalar or matrix
+//*************************************************************************
+
+VarPtr Matrix::operator==(const Variable& variable) const{
+    VarPtr new_obj = variable.Copy();
+    return *(new_obj.get()) + *this;
+}
+VarPtr Matrix::operator==(const Scalar& scalar) const{
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]==scalar.get());
+
+    return VarPtr(new_matrix);
+}
+VarPtr Matrix::operator==(const Matrix& matrix) const{
+    if (row_ != matrix.row_ || col_ != matrix.col_)
+        throw BAD_MAT_DIMS("==");
+
+    Matrix* new_matrix = new Matrix(row_, col_, 0);
+    for (int i = 0; i < row_; i++)
+        for (int j = 0; j < col_; j++)
+            new_matrix->matrix_[j][i] = (matrix_[i][j] == matrix.matrix_[i][j]);
+
+    return VarPtr(new_matrix);
+}
+
+
+//*************************************************************************
+//* Function name: operator&&
+//* Description: invalid operation.
+//* Parameters:
+//* Return Value: throw BAD_INPUT exception;
+//*************************************************************************
+
+VarPtr Matrix::operator&&(const Variable& variable) const{
+    throw BAD_INPUT;
+}
+VarPtr Matrix::operator&&(const Scalar& scalar) const{
+    throw BAD_INPUT;
+}
+VarPtr Matrix::operator&&(const Matrix& matrix) const{
+    throw BAD_INPUT;
+}
+
+
+//*************************************************************************
+//* Function name: operator||
+//* Description: invalid operation.
+//* Parameters:
+//* Return Value: throw BAD_INPUT exception;
+//*************************************************************************
+
+VarPtr Matrix::operator||(const Variable& variable) const{
+    throw BAD_INPUT;
+}
+VarPtr Matrix::operator||(const Scalar& scalar) const{
+    throw BAD_INPUT;
+}
+VarPtr Matrix::operator||(const Matrix& matrix) const{
+    throw BAD_INPUT;
+}
+

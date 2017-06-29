@@ -18,9 +18,9 @@ public:
     VariablesMap();
     ~VariablesMap();
     void SetSavedName(const string& newSavedName);
-    string& GetTmpVariable();
+    string GetTmpVariable();
     void ClearTmpVars();
-    VarPtr Operator(const string& x);
+    VarPtr& operator[](const string& x);
     VarPtr& at(const string& x);
     void erase(const string& x);
 

@@ -17,12 +17,8 @@ public:
 	VarPtr Copy() const;
 	VarPtr NumElems() const;
 	virtual VarPtr Transpose() const;
-
 	virtual void Print(ostream& ro) const;
-
-
-
-
+	int get() const;
 
 	virtual VarPtr operator+(const Variable&) const  ;
 	virtual VarPtr operator+(const Scalar&) const  ;
@@ -53,9 +49,10 @@ public:
 	virtual VarPtr operator||(const Matrix&) const  ;
 
 
-	virtual int& operator[](int idx)  ;
-	virtual int& operator[](IdxVec v) const  ;
+	virtual int& operator[](int idx);
 	virtual int& operator[](IdxVec v) ;
+	virtual const int& operator[](int idx) const;
+	virtual const int& operator[](IdxVec v) const;
 
 	virtual VarPtr Conv(VarPtr rhs) const;
 
