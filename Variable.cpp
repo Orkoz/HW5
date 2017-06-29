@@ -6,7 +6,7 @@ using namespace std;
 
 
 
-ostream& operator<< (ostream& ro, const VarPtr& p); {
+ostream& operator<< (ostream& ro, const VarPtr& p) {
 	p.print(ro);
 	return ro;
 }
@@ -23,7 +23,3 @@ IdxVec operator+(const IdxVec& lhs, const IdxVec& rhs)
 	return res;
 }
 
-ostream & operator<<(ostream & ro, const VarPtr & p)
-{
-	// TODO: insert return statement here
-}
