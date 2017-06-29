@@ -26,7 +26,20 @@ class ScriptException: public exception // ?????????
 {
 // Todo: complete class implementation
 public:
-	ScriptException(char* definition_string) : exception_definition_(definition_string) {}
+	ScriptException(string definition_string)
+	{
+		char* exception_definition_ = new char[definition_string.length() + 1];
+		strcpy(exception_definition_, definition_string.c_str());
+	}
+	ScriptException(char* definition_string)
+	{
+		exception_definition_ = new char[strlen(definition_string) + 1];
+		strcpy(exception_definition_, definition_string);
+	}
+	~ScriptException() throw ()
+	{
+		delete[] exception_definition_;
+	}
 	virtual const char* what() const throw ()
 	{
 		return exception_definition_;
