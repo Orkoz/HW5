@@ -22,10 +22,20 @@ using namespace std;
 
 #define UNEXPECTED(x)  ScriptException(x)
 
-class ScriptException: public exception // ?????????
+class ScriptException: public exception 
 {
-// Todo: complete class implementation
+
 public:
+
+
+	//*************************************************************************
+	//* Function name: ScriptException
+	//* Description: initializing the exception with the string given.
+	//*              
+	//* Parameters: string.
+	//* Return Value:  none.
+	//*************************************************************************
+
 	ScriptException(string definition_string)
 	{
 		char* exception_definition_ = new char[definition_string.length() + 1];
@@ -40,6 +50,14 @@ public:
 	{
 		delete[] exception_definition_;
 	}
+
+	//*************************************************************************
+	//* Function name: what
+	//* Description: overrides function what of <exception> to return our
+	//*              string
+	//* Parameters:
+	//* Return Value:  the exception string.
+	//*************************************************************************
 	virtual const char* what() const throw ()
 	{
 		return exception_definition_;

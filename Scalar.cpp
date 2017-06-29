@@ -6,19 +6,13 @@
 using namespace std;
 
 
-//int & Scalar::operator[](int idx) const
-//{
-//	if (idx != 1)
-//	{
-//		throw INDEX_OUT_OF_RANGE;
-//	}
-//	return val_;
-//}
-//
-//int & Scalar::operator[](IdxVec v) const
-//{
-//	
-//}
+//*************************************************************************
+//* Function name: Scalar::Conv
+//* Description: Given by the staff of the course. 
+//*              
+//* Parameters:
+//* Return Value: 
+//*************************************************************************
 
 VarPtr Scalar::Conv(VarPtr rhs) const
 {
@@ -32,6 +26,14 @@ VarPtr Scalar::Conv(VarPtr rhs) const
 	return pRet;
 }
 
+//*************************************************************************
+//* Function name: Scalar::Scalar c-tor's, and d-tor
+//* Description: creating a new scalar with value 'val' or 0 if not given.
+//*              
+//* Parameters: val (if given) an integer
+//* Return Value: none
+//*************************************************************************
+
 Scalar::Scalar(int val): val_(val)
 {
 }
@@ -44,17 +46,41 @@ Scalar::Scalar(): val_(0)
 {
 }
 
+//*************************************************************************
+//* Function name: Scalar::Copy()
+//* Description: makes a new copy of the scalar
+//*              
+//* Parameters: none
+//* Return Value: a VarPtr to the new object
+//*************************************************************************
+
 VarPtr Scalar::Copy() const
 {
 	VarPtr scalar_c = VarPtr(new Scalar(val_));
 	return scalar_c;
 }
 
+//*************************************************************************
+//* Function name: Scalar::NumElems()
+//* Description: returns 1 because it is a scalar with only one value
+//*              
+//* Parameters: none
+//* Return Value: a new scalar with value 1
+//*************************************************************************
+
 VarPtr Scalar::NumElems() const
 {
 	VarPtr scalar_c = VarPtr(new Scalar(1));
 	return scalar_c;
 }
+
+//*************************************************************************
+//* Function name: Scalar::Size()
+//* Description: returns a new natrix with dim' 1x2 with values 1
+//*              or if given a dim' than just giving back a scalar with value 1
+//* Parameters: int dim
+//* Return Value: a new scalar or matrix, filled with 1's
+//*************************************************************************
 
 VarPtr Scalar::Size() const
 {
@@ -68,16 +94,42 @@ VarPtr Scalar::Size(int dim) const
 	return scalar_size;
 }
 
+//*************************************************************************
+//* Function name: Scalar::Transpose()
+//* Description: doing transpose to a scalars just copies the scalar
+//*              
+//* Parameters: none
+//* Return Value: returns copies scalar
+//*************************************************************************
+
 VarPtr Scalar::Transpose() const
 {
 	VarPtr scalar_t = this->Copy();
 	return scalar_t;
 }
 
+//*************************************************************************
+//* Function name: Scalar::Print
+//* Description: print function for scalar
+//*              
+//* Parameters:out stream ro
+//* Return Value: changes the out stream accordingly
+//*************************************************************************
+
 void Scalar::Print(ostream& ro) const
 {
 	ro << val_;
 }
+
+//*************************************************************************
+//* Function name: Scalar::operator+
+//* Description: handles adding numbers. dealing separtadly with adding
+//*              scalar and scalar, scalar and matrix (sends for operator 
+//*              from class matrix) or scalar and variable, changes the
+//*              order so the dynamic type could take control.
+//* Parameters: variable & rhs to be added
+//* Return Value: the new scalar or matrix
+//*************************************************************************
 
 VarPtr Scalar::operator+(const Variable & rhs) const
 {
@@ -97,6 +149,16 @@ VarPtr Scalar::operator+(const Matrix & rhs) const
 	return *(to_be_added.get()) + *this;
 }
 
+//*************************************************************************
+//* Function name: Scalar::operator*
+//* Description: handles multypling numbers. dealing separtadly with mul'
+//*              scalar and scalar, scalar and matrix (sends for operator 
+//*              from class matrix) or scalar and variable, changes the
+//*              order so the dynamic type could take control.
+//* Parameters: variable & rhs to be added
+//* Return Value: the new scalar or matrix
+//*************************************************************************
+
 VarPtr Scalar::operator*(const Variable & rhs) const
 {
 	VarPtr to_be_multiplied = rhs.Copy();
@@ -114,6 +176,16 @@ VarPtr Scalar::operator*(const Matrix & rhs) const
 	VarPtr to_be_multiplied = rhs.Copy();
 	return *(to_be_multiplied.get()) * (*this);
 }
+
+//*************************************************************************
+//* Function name: Scalar::operator<
+//* Description: handles logic <. dealing separtadly with logic between
+//*              scalar and scalar, scalar and matrix (sends for operator 
+//*              from class matrix) or scalar and variable, changes the
+//*              order so the dynamic type could take control.
+//* Parameters: variable & rhs to do the logic with
+//* Return Value: the new scalar or matrix with result of logic function
+//*************************************************************************
 
 VarPtr Scalar::operator<(const Variable & rhs) const
 {
@@ -138,6 +210,16 @@ VarPtr Scalar::operator<(const Matrix & rhs) const
 	VarPtr logic_answer = rhs.Copy();
 	return *(logic_answer.get()) > (*this);
 }
+
+//*************************************************************************
+//* Function name: Scalar::operator>
+//* Description: handles logic >. dealing separtadly with logic between
+//*              scalar and scalar, scalar and matrix (sends for operator 
+//*              from class matrix) or scalar and variable, changes the
+//*              order so the dynamic type could take control.
+//* Parameters: variable & rhs to do the logic with
+//* Return Value: the new scalar or matrix with result of logic function
+//*************************************************************************
 
 VarPtr Scalar::operator>(const Variable & rhs) const
 {
@@ -164,6 +246,16 @@ VarPtr Scalar::operator>(const Matrix & rhs) const
 	return *(logic_answer.get()) < (*this);
 }
 
+//*************************************************************************
+//* Function name: Scalar::operator==
+//* Description: handles logic ==. dealing separtadly with logic between
+//*              scalar and scalar, scalar and matrix (sends for operator 
+//*              from class matrix) or scalar and variable, changes the
+//*              order so the dynamic type could take control.
+//* Parameters: variable & rhs to do the logic with
+//* Return Value: the new scalar or matrix with result of logic function
+//*************************************************************************
+
 VarPtr Scalar::operator==(const Variable & rhs) const
 {
 	VarPtr to_be_checked = rhs.Copy();
@@ -189,14 +281,24 @@ VarPtr Scalar::operator==(const Matrix & rhs) const
 	return *(logic_answer.get()) == (*this);
 }
 
-VarPtr Scalar::operator&&(const Variable &) const
+//*************************************************************************
+//* Function name: Scalar::operator&&
+//* Description: handles logic &&. dealing separtadly with logic between
+//*              scalar and scalar, scalar and matrix (throws exception)
+//*              or scalar and variable, changes the
+//*              order so the dynamic type could take control.
+//* Parameters: variable & rhs to do the logic with
+//* Return Value: the new scalar or matrix with result of logic function
+//*************************************************************************
+
+VarPtr Scalar::operator&&(const Variable & rhs) const
 {
 	VarPtr to_be_checked = rhs.Copy();
 	return *(to_be_checked.get()) && (*this);
 
 }
 
-VarPtr Scalar::operator&&(const Scalar &) const
+VarPtr Scalar::operator&&(const Scalar & rhs) const
 {
 	if ((val_ == 1) && (rhs.val_ == 1))
 	{
@@ -209,18 +311,28 @@ VarPtr Scalar::operator&&(const Scalar &) const
 	return logic_answer;
 }
 
-VarPtr Scalar::operator&&(const Matrix &) const
+VarPtr Scalar::operator&&(const Matrix & rhs) const
 {
 	throw BAD_INPUT;
 }
 
-VarPtr Scalar::operator||(const Variable &) const
+//*************************************************************************
+//* Function name: Scalar::operator||
+//* Description: handles logic ||. dealing separtadly with logic between
+//*              scalar and scalar, scalar and matrix (throws exception)
+//*              or scalar and variable, changes the
+//*              order so the dynamic type could take control.
+//* Parameters: variable & rhs to do the logic with
+//* Return Value: the new scalar or matrix with result of logic function
+//*************************************************************************
+
+VarPtr Scalar::operator||(const Variable & rhs) const
 {
 	VarPtr to_be_checked = rhs.Copy();
 	return *(to_be_checked.get()) || (*this);
 }
 
-VarPtr Scalar::operator||(const Scalar &) const
+VarPtr Scalar::operator||(const Scalar & rhs) const
 {
 	if ((val_ == 0) && (rhs.val_ == 0))
 	{
@@ -233,12 +345,21 @@ VarPtr Scalar::operator||(const Scalar &) const
 	return logic_answer;
 }
 
-VarPtr Scalar::operator||(const Matrix &) const
+VarPtr Scalar::operator||(const Matrix & rhs) const
 {
 	throw BAD_INPUT;
 }
 
-int & Scalar::operator[](int idx) const
+//*************************************************************************
+//* Function name:  Scalar::operator[]
+//* Description: returns the value of the specific index
+//*              because it is a scalar, only index is 1 so throws exception
+//*              otherwise. returns by reference or by value
+//* Parameters: int idx or IdxVec (index vector)
+//* Return Value: the value.
+//*************************************************************************
+
+int & Scalar::operator[](int idx)
 {
 	if (idx != 1)
 	{

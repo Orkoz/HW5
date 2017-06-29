@@ -53,7 +53,7 @@ public:
 	virtual VarPtr operator||(const Matrix&) const  ;
 
 
-	virtual int& operator[](int idx) const  ;
+	virtual int& operator[](int idx)  ;
 	virtual int& operator[](IdxVec v) const  ;
 	virtual int& operator[](IdxVec v) ;
 
