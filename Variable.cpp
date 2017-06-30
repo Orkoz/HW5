@@ -18,6 +18,11 @@ ostream& operator<< (ostream& ro, const Variable& p) {
 	return ro;
 }
 
+ostream& operator<<(ostream& ro, VarPtr& p) {
+	(*p).Print(ro);
+	return ro;
+}
+
 //*************************************************************************
 //* Function name: operator+
 //* Description: Given by the staff of the course

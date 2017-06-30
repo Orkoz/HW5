@@ -64,7 +64,8 @@ public:
 	virtual VarPtr operator||(const Scalar&) const = 0;
 	virtual VarPtr operator||(const Matrix&) const = 0;
 
-    friend ostream& operator<<(ostream& ro, const Variable& rhs);
+    friend ostream& operator<<(ostream& ro, const Variable& p);
+	friend ostream& operator<<(ostream& ro, VarPtr& p);
 
 };
 
