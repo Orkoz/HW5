@@ -1,6 +1,5 @@
 #include"VariablesMap.h"
 #include"ScriptExceptions.h"
-#include<string>
 #include <stdexcept>
 
 using namespace std;
@@ -63,9 +62,9 @@ void VariablesMap::SetSavedName(const string& newSavedName) {
 string VariablesMap::GetTmpVariable() {
     string tmp_name;
     char c= 'Z';
-    for (unsigned int j = 0; j < valid_chars_.length(); ++j) {
+    for (int j = 0; j < valid_chars_.length(); ++j) {
         if ((valid_chars_[j] >= 'a')){
-            for (unsigned int z = 0; z < valid_chars_.length(); ++z) {
+            for (int z = 0; z < valid_chars_.length(); ++z) {
                 bool move_on = false;
                 tmp_name += valid_chars_[z];
                 list<string>::iterator it_list = tmpVarList_.begin();
@@ -128,9 +127,9 @@ VarPtr& VariablesMap::operator[](const string& x) {
         throw INVALID_VAR_NAME(x);
 
 
-    for (unsigned int i = 0; i < x.length() ; ++i) {
+    for (int i = 0; i < x.length() ; ++i) {
         valid = false;
-        for (unsigned int j = 0; j < valid_chars_.length(); ++j) {
+        for (int j = 0; j < valid_chars_.length(); ++j) {
             if (valid_chars_[j] == x[i]){
                 valid = true;
                 break;
