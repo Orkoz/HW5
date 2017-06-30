@@ -42,3 +42,4 @@ IdxVec operator+(const IdxVec& lhs, const IdxVec& rhs)
 	return res;
 }
 
+Variable::~Variable() {}
