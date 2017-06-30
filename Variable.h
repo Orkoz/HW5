@@ -22,6 +22,7 @@ IdxVec operator+(const IdxVec& lhs, const IdxVec& rhs);
 class Variable
 {
 public:
+	virtual ~Variable();
 
 	virtual VarPtr Copy() const = 0;
 	virtual VarPtr NumElems() const = 0;
