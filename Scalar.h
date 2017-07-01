@@ -10,7 +10,7 @@ public:
 
 	Scalar();
 	Scalar(int val);
-	~Scalar();
+	//~Scalar();
 
 	VarPtr Size() const;
 	VarPtr Size(int d) const;
@@ -18,41 +18,41 @@ public:
 	VarPtr NumElems() const;
 	virtual VarPtr Transpose() const;
 	virtual void Print(ostream& ro) const;
-	int get() const;
+	int getValue() const;
+	void setValue(int val);
 
-	virtual VarPtr operator+(const Variable&) const  ;
-	virtual VarPtr operator+(const Scalar&) const  ;
-	virtual VarPtr operator+(const Matrix&) const  ;
+	virtual VarPtr operator+(const Variable&)   ;
+	virtual VarPtr operator+(const Scalar&)   ;
+	virtual VarPtr operator+(const Matrix&)   ;
 
-	virtual VarPtr operator*(const Variable&) const  ;
-	virtual VarPtr operator*(const Scalar&) const  ;
-	virtual VarPtr operator*(const Matrix&) const  ;
+	virtual VarPtr operator*(const Variable&)   ;
+	virtual VarPtr operator*(const Scalar&)   ;
+	virtual VarPtr operator*(const Matrix&)   ;
 
-	virtual VarPtr operator<(const Variable&) const  ;
-	virtual VarPtr operator<(const Scalar&) const  ;
-	virtual VarPtr operator<(const Matrix&) const  ;
+	virtual VarPtr operator<(const Variable&)   ;
+	virtual VarPtr operator<(const Scalar&)   ;
+	virtual VarPtr operator<(const Matrix&)   ;
 
-	virtual VarPtr operator>(const Variable&) const  ;
-	virtual VarPtr operator>(const Scalar&) const  ;
-	virtual VarPtr operator>(const Matrix&) const  ;
+	virtual VarPtr operator>(const Variable&)   ;
+	virtual VarPtr operator>(const Scalar&)   ;
+	virtual VarPtr operator>(const Matrix&)   ;
 
-	virtual VarPtr operator==(const Variable&) const  ;
-	virtual VarPtr operator==(const Scalar&) const  ;
-	virtual VarPtr operator==(const Matrix&) const  ;
+	virtual VarPtr operator==(const Variable&)   ;
+	virtual VarPtr operator==(const Scalar&)   ;
+	virtual VarPtr operator==(const Matrix&)   ;
 
-	virtual VarPtr operator&&(const Variable&) const  ;
-	virtual VarPtr operator&&(const Scalar&) const  ;
-	virtual VarPtr operator&&(const Matrix&) const  ;
+	virtual VarPtr operator&&(const Variable&)   ;
+	virtual VarPtr operator&&(const Scalar&)   ;
+	virtual VarPtr operator&&(const Matrix&)   ;
 
-	virtual VarPtr operator||(const Variable&) const  ;
-	virtual VarPtr operator||(const Scalar&) const  ;
-	virtual VarPtr operator||(const Matrix&) const  ;
+	virtual VarPtr operator||(const Variable&)   ;
+	virtual VarPtr operator||(const Scalar&)   ;
+	virtual VarPtr operator||(const Matrix&)   ;
 
 
 	virtual int& operator[](int idx);
 	virtual int& operator[](IdxVec v) ;
-	virtual const int& operator[](int idx) const;
-	virtual const int& operator[](IdxVec v) const;
+	virtual int& operator[](IdxVec v) const;
 
 	virtual VarPtr Conv(VarPtr rhs) const;
 
