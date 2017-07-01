@@ -1,3 +1,4 @@
+#pragma once
 #ifndef _MY_SHARED_PTR_H_
 #define _MY_SHARED_PTR_H_
 #include<ostream>
@@ -9,17 +10,16 @@
 //* the implementation is just after declaration out of the class block.
 //*************************************************************************
 
-template <class C>
-class MySharedPtr
+template <typename C>  class MySharedPtr
 {
 
 public:
 
     MySharedPtr();
     MySharedPtr(C* value);
-    MySharedPtr(const MySharedPtr& org_obj);
+    MySharedPtr(const MySharedPtr<C>& org_obj);
     ~MySharedPtr();
-    MySharedPtr& operator=(const MySharedPtr& org_obj);
+    MySharedPtr<C>& operator=(const MySharedPtr<C>& org_obj);
     C& operator*();
     C* operator->();
     C* get();
@@ -145,12 +145,5 @@ template <class C>
 C* MySharedPtr<C>::get() {
     return value_;
 }
-
-template <class C>
-ostream& operator<< (ostream& ro,  const MySharedPtr<C>& p) {
-    return ro << (*p);
-}
-
-
 
 #endif // _MY_SHARED_PTR_H_
