@@ -42,22 +42,22 @@ Matrix::Matrix(int startVal, int endVal) : row_(1), col_ (endVal - startVal + 1)
 }
 
 
-//*************************************************************************
-//* Function name: Copy Constructor
-//* Description:
-//* Parameters:
-//*		org_mat– the original Matrix.
-//* Return Value: Matrix pointer.
-//*************************************************************************
-
-Matrix::Matrix(const Matrix& org_mat) :row_(org_mat.row_), col_(org_mat.col_){
-    matrix_ = new int*[row_];
-	for (int i = 0; i < row_; i++) {
-		matrix_[i] = new int[col_];
-		for (int j = 0; j < col_; j++)
-			matrix_[i][j] = org_mat.matrix_[i][j];
-	}
-}
+////*************************************************************************
+////* Function name: Copy Constructor
+////* Description:
+////* Parameters:
+////*		org_mat– the original Matrix.
+////* Return Value: Matrix pointer.
+////*************************************************************************
+//
+//Matrix::Matrix(const Matrix& org_mat) :row_(org_mat.row_), col_(org_mat.col_){
+//    matrix_ = new int*[row_];
+//	for (int i = 0; i < row_; i++) {
+//		matrix_[i] = new int[col_];
+//		for (int j = 0; j < col_; j++)
+//			matrix_[i][j] = org_mat.matrix_[i][j];
+//	}
+//}
 
 
 //*************************************************************************
@@ -68,6 +68,8 @@ Matrix::Matrix(const Matrix& org_mat) :row_(org_mat.row_), col_(org_mat.col_){
 //*************************************************************************
 
 Matrix::~Matrix() {
+	for (int i = 0; i < row_; i++)
+		delete[] matrix_[i];
 	delete[] matrix_;
 }
 
@@ -80,7 +82,16 @@ Matrix::~Matrix() {
 //*************************************************************************
 
 VarPtr Matrix::Copy() const {
-    return VarPtr(new Matrix(*this));
+	VarPtr mat_c = VarPtr(new Matrix(row_, col_, 0));
+	int ** mat_c_pointer = mat_c->getMatrix();
+	for (int i = 0; i < row_; i++)
+	{
+		for (int j = 0; j < col_; j++)
+		{
+			mat_c_pointer[i][j] = matrix_[i][j];
+		}
+	}
+    return mat_c;
 }
 
 
@@ -107,7 +118,7 @@ VarPtr Matrix::NumElems() const {
 VarPtr Matrix::Size() const {
 	Matrix* new_matrix = new Matrix(1, 2, 0);
 	new_matrix->matrix_[0][0] = row_;
-	new_matrix->matrix_[0][0] = col_;
+	new_matrix->matrix_[0][1] = col_;
 	return VarPtr(new_matrix);
 }
 
@@ -201,9 +212,27 @@ VarPtr Matrix::Transpose() const {
 void Matrix::Print(ostream &ro) const {
 	for (int i = 0; i < row_; i++) {
 		for (int j = 0; j < col_; j++)
-			ro << matrix_[i][j] << " ";
-		ro << "\n";
+			ro << matrix_[i][j] << "	";
+		if (i != (row_-1))
+			ro << "\n";
 	}
+}
+
+//*************************************************************************
+//* Function name: getValue and getMatix 
+//* Description: returns pointer to variable
+//* Parameters:
+//* Return Value: int** or 0
+//*************************************************************************
+
+int Matrix::getValue() const
+{
+	return 0;
+}
+
+int ** Matrix::getMatrix() const
+{
+	return matrix_;
 }
 
 
@@ -225,15 +254,15 @@ int& Matrix::operator[](int idx) {
 
 }
 
-const int& Matrix::operator[](int idx) const {
-    if ((col_*row_) < idx || idx < 1){
-        throw INDEX_OUT_OF_RANGE;
-    }
-    int row = row_ / idx; // row_ mod idx;
-    int col = idx - row*col_ - 1;
-    return matrix_[row][col];
-
-}
+//const int& Matrix::operator[](int idx) const {
+//    if ((col_*row_) < idx || idx < 1){
+//        throw INDEX_OUT_OF_RANGE;
+//    }
+//    int row = row_ / idx; // row_ mod idx;
+//    int col = idx - row*col_ - 1;
+//    return matrix_[row][col];
+//
+//}
 
 
 //*************************************************************************
@@ -249,15 +278,15 @@ int& Matrix::operator[](IdxVec v) {
 		throw INDEX_OUT_OF_RANGE;
 	}
 	
-	return matrix_[v[0]][v[1]];
+	return matrix_[v[0]-1][v[1]-1];  // '-1' to adjust index to array
 }
 
-const int& Matrix::operator[](IdxVec v) const {
+int& Matrix::operator[](IdxVec v) const {
     if (v.size() != 2 || v[0] > row_ || v[0] <1 || v[1] > col_ || v[1] < 1){
         throw INDEX_OUT_OF_RANGE;
     }
 
-    return matrix_[v[0]][v[1]];
+    return matrix_[v[0]-1][v[1]-1]; // '-1' to adjust index to array
 }
 
 
@@ -271,26 +300,26 @@ const int& Matrix::operator[](IdxVec v) const {
 //* Return Value: the new scalar or matrix
 //*************************************************************************
 
-VarPtr Matrix::operator+(const Variable& variable) const{
+VarPtr Matrix::operator+(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
     return *(new_obj.get()) + *this;
 }
-VarPtr Matrix::operator+(const Scalar& scalar) const{
+VarPtr Matrix::operator+(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = matrix_[i][j] + scalar.get();
+            new_matrix->matrix_[i][j] = matrix_[i][j] + scalar.getValue();
 
     return VarPtr(new_matrix);
 }
-VarPtr Matrix::operator+(const Matrix& matrix) const{
+VarPtr Matrix::operator+(const Matrix& matrix) {
     if (row_ != matrix.row_ || col_ != matrix.col_)
         throw BAD_MAT_DIMS("+");
 
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = matrix_[i][j] + matrix.matrix_[i][j];
+            new_matrix->matrix_[i][j] = matrix_[i][j] + matrix.matrix_[i][j];
 
     return VarPtr(new_matrix);
 }
@@ -306,19 +335,19 @@ VarPtr Matrix::operator+(const Matrix& matrix) const{
 //* Return Value: the new scalar or matrix
 //*************************************************************************
 
-VarPtr Matrix::operator*(const Variable& variable) const{
+VarPtr Matrix::operator*(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
     return *(new_obj.get()) + *this;
 }
-VarPtr Matrix::operator*(const Scalar& scalar) const{
+VarPtr Matrix::operator*(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = matrix_[i][j] * scalar.get();
+            new_matrix->matrix_[i][j] = matrix_[i][j] * scalar.getValue();
 
     return VarPtr(new_matrix);
 }
-VarPtr Matrix::operator*(const Matrix& matrix) const{
+VarPtr Matrix::operator*(const Matrix& matrix) {
     if (col_ != matrix.row_)
         throw BAD_MAT_PROD;
 
@@ -346,19 +375,19 @@ VarPtr Matrix::operator*(const Matrix& matrix) const{
 //* Return Value: the new scalar or matrix
 //*************************************************************************
 
-VarPtr Matrix::operator<(const Variable& variable) const{
+VarPtr Matrix::operator<(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
     return *(new_obj.get()) + *this;
 }
-VarPtr Matrix::operator<(const Scalar& scalar) const{
+VarPtr Matrix::operator<(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]<scalar.get());
+            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]<scalar.getValue());
 
     return VarPtr(new_matrix);
 }
-VarPtr Matrix::operator<(const Matrix& matrix) const{
+VarPtr Matrix::operator<(const Matrix& matrix) {
     if (row_ != matrix.row_ || col_ != matrix.col_)
         throw BAD_MAT_DIMS("> / <");
 
@@ -381,19 +410,19 @@ VarPtr Matrix::operator<(const Matrix& matrix) const{
 //* Return Value: the new scalar or matrix
 //*************************************************************************
 
-VarPtr Matrix::operator>(const Variable& variable) const{
+VarPtr Matrix::operator>(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
     return *(new_obj.get()) + *this;
 }
-VarPtr Matrix::operator>(const Scalar& scalar) const{
+VarPtr Matrix::operator>(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]>scalar.get());
+            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]>scalar.getValue());
 
     return VarPtr(new_matrix);
 }
-VarPtr Matrix::operator>(const Matrix& matrix) const{
+VarPtr Matrix::operator>(const Matrix& matrix) {
     if (row_ != matrix.row_ || col_ != matrix.col_)
         throw BAD_MAT_DIMS("> / <");
 
@@ -416,26 +445,26 @@ VarPtr Matrix::operator>(const Matrix& matrix) const{
 //* Return Value: the new scalar or matrix
 //*************************************************************************
 
-VarPtr Matrix::operator==(const Variable& variable) const{
+VarPtr Matrix::operator==(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
     return *(new_obj.get()) + *this;
 }
-VarPtr Matrix::operator==(const Scalar& scalar) const{
+VarPtr Matrix::operator==(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]==scalar.get());
+            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]==scalar.getValue());
 
     return VarPtr(new_matrix);
 }
-VarPtr Matrix::operator==(const Matrix& matrix) const{
+VarPtr Matrix::operator==(const Matrix& matrix) {
     if (row_ != matrix.row_ || col_ != matrix.col_)
         throw BAD_MAT_DIMS("==");
 
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (matrix_[i][j] == matrix.matrix_[i][j]);
+            new_matrix->matrix_[i][j] = (matrix_[i][j] == matrix.matrix_[i][j]);
 
     return VarPtr(new_matrix);
 }
@@ -448,13 +477,13 @@ VarPtr Matrix::operator==(const Matrix& matrix) const{
 //* Return Value: throw BAD_INPUT exception;
 //*************************************************************************
 
-VarPtr Matrix::operator&&(const Variable& variable) const{
+VarPtr Matrix::operator&&(const Variable& variable) {
     throw BAD_INPUT;
 }
-VarPtr Matrix::operator&&(const Scalar& scalar) const{
+VarPtr Matrix::operator&&(const Scalar& scalar) {
     throw BAD_INPUT;
 }
-VarPtr Matrix::operator&&(const Matrix& matrix) const{
+VarPtr Matrix::operator&&(const Matrix& matrix) {
     throw BAD_INPUT;
 }
 
@@ -466,13 +495,13 @@ VarPtr Matrix::operator&&(const Matrix& matrix) const{
 //* Return Value: throw BAD_INPUT exception;
 //*************************************************************************
 
-VarPtr Matrix::operator||(const Variable& variable) const{
+VarPtr Matrix::operator||(const Variable& variable) {
     throw BAD_INPUT;
 }
-VarPtr Matrix::operator||(const Scalar& scalar) const{
+VarPtr Matrix::operator||(const Scalar& scalar) {
     throw BAD_INPUT;
 }
-VarPtr Matrix::operator||(const Matrix& matrix) const{
+VarPtr Matrix::operator||(const Matrix& matrix) {
     throw BAD_INPUT;
 }
 

@@ -12,48 +12,49 @@ class Matrix : public Variable
 public:
 	Matrix(int row, int col, int val);
 	Matrix(int startVal, int endVal);
-    Matrix(const Matrix& mat);
+    //Matrix(const Matrix& mat);
 	~Matrix();
-	VarPtr Copy() const;
-	VarPtr NumElems() const;
-	VarPtr Size() const;
-	VarPtr Size(int dim) const;
-	VarPtr Conv(VarPtr rhs) const; ////needed to declare one for scalar and one for matrix?
-	VarPtr Transpose() const;
-	void Print(ostream& ro) const;
+	virtual VarPtr Copy() const;
+	virtual VarPtr NumElems() const;
+	virtual VarPtr Size() const;
+	virtual VarPtr Size(int dim) const;
+	virtual VarPtr Conv(VarPtr rhs) const; 
+	virtual VarPtr Transpose() const;
+	virtual void Print(ostream& ro) const;
+	virtual int getValue()const;
+	virtual int** getMatrix()const;
 
-	int& operator[](int idx);
-	int& operator[](IdxVec v);
-	const int& operator[](int idx) const;
-	const int& operator[](IdxVec v) const;
+	virtual int& operator[](int idx);
+	virtual int& operator[](IdxVec v);
+	virtual int& operator[](IdxVec v) const;
 
-	VarPtr operator+(const Variable&) const;
-	VarPtr operator+(const Scalar&) const;
-	VarPtr operator+(const Matrix&) const;
+	virtual VarPtr operator+(const Variable&) ;
+	virtual VarPtr operator+(const Scalar&) ;
+	virtual VarPtr operator+(const Matrix&) ;
 
-	VarPtr operator*(const Variable&) const;
-	VarPtr operator*(const Scalar&) const;
-	VarPtr operator*(const Matrix&) const;
+	virtual VarPtr operator*(const Variable&) ;
+	virtual VarPtr operator*(const Scalar&) ;
+	virtual VarPtr operator*(const Matrix&) ;
 
-	VarPtr operator<(const Variable&) const;
-	VarPtr operator<(const Scalar&) const;
-	VarPtr operator<(const Matrix&) const;
+	virtual VarPtr operator<(const Variable&) ;
+	virtual VarPtr operator<(const Scalar&) ;
+	virtual VarPtr operator<(const Matrix&) ;
 
-	VarPtr operator>(const Variable&) const;
-	VarPtr operator>(const Scalar&) const;
-	VarPtr operator>(const Matrix&) const;
+	virtual VarPtr operator>(const Variable&) ;
+	virtual VarPtr operator>(const Scalar&) ;
+	virtual VarPtr operator>(const Matrix&) ;
 
-	VarPtr operator==(const Variable&) const;
-	VarPtr operator==(const Scalar&) const;
-	VarPtr operator==(const Matrix&) const;
+	virtual VarPtr operator==(const Variable&) ;
+	virtual VarPtr operator==(const Scalar&) ;
+	virtual VarPtr operator==(const Matrix&) ;
 
-	VarPtr operator&&(const Variable&) const;
-	VarPtr operator&&(const Scalar&) const;
-	VarPtr operator&&(const Matrix&) const;
+	virtual VarPtr operator&&(const Variable&) ;
+	virtual VarPtr operator&&(const Scalar&) ;
+	virtual VarPtr operator&&(const Matrix&) ;
 
-	VarPtr operator||(const Variable&) const;
-	VarPtr operator||(const Scalar&) const;
-	VarPtr operator||(const Matrix&) const;
+	virtual VarPtr operator||(const Variable&) ;
+	virtual VarPtr operator||(const Scalar&) ;
+	virtual VarPtr operator||(const Matrix&) ;
 
 
 private:
