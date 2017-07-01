@@ -33,20 +33,32 @@ VarPtr Scalar::Conv(VarPtr rhs) const {
 
 Scalar::Scalar(int val): val_(val) {}
 
-Scalar::~Scalar() {}
+//Scalar::~Scalar() {}
 
 Scalar::Scalar(): val_(0) {}
 
 
 //*************************************************************************
-//* Function name: get
+//* Function name: getVal
 //* Description: returns the Scalar value.
 //* Parameters: none.
 //* Return Value: integer - the Scalar value.
 //*************************************************************************
 
-int Scalar::get() const{
+int Scalar::getValue() const{
 	return val_;
+}
+
+//*************************************************************************
+//* Function name: setVal
+//* Description: sets internal integer to new integer
+//* Parameters: int val
+//* Return Value: none.
+//*************************************************************************
+
+void Scalar::setValue(int val)
+{
+	val_ = val;
 }
 
 //*************************************************************************
@@ -124,17 +136,17 @@ void Scalar::Print(ostream& ro) const {
 //* Return Value: the new scalar or matrix
 //*************************************************************************
 
-VarPtr Scalar::operator+(const Variable & rhs) const {
+VarPtr Scalar::operator+(const Variable & rhs)  {
 	VarPtr to_be_added = rhs.Copy();
 	return *(to_be_added.get()) + *this;
 }
 
-VarPtr Scalar::operator+(const Scalar & rhs) const {
+VarPtr Scalar::operator+(const Scalar & rhs)  {
 	VarPtr sum = VarPtr(new Scalar( val_ + rhs.val_));
 	return sum;
 }
 
-VarPtr Scalar::operator+(const Matrix & rhs) const {
+VarPtr Scalar::operator+(const Matrix & rhs)  {
 	VarPtr to_be_added = rhs.Copy();
 	return *(to_be_added.get()) + *this;
 }
@@ -149,17 +161,17 @@ VarPtr Scalar::operator+(const Matrix & rhs) const {
 //* Return Value: the new scalar or matrix
 //*************************************************************************
 
-VarPtr Scalar::operator*(const Variable & rhs) const {
+VarPtr Scalar::operator*(const Variable & rhs)  {
 	VarPtr to_be_multiplied = rhs.Copy();
 	return *(to_be_multiplied.get()) * (*this);
 }
 
-VarPtr Scalar::operator*(const Scalar & rhs) const {
-	VarPtr multiply = VarPtr(new Scalar(val_ + rhs.val_));
+VarPtr Scalar::operator*(const Scalar & rhs)  {
+	VarPtr multiply = VarPtr(new Scalar((val_) * (rhs.val_)));
 	return multiply;
 }
 
-VarPtr Scalar::operator*(const Matrix & rhs) const {
+VarPtr Scalar::operator*(const Matrix & rhs)  {
 	VarPtr to_be_multiplied = rhs.Copy();
 	return *(to_be_multiplied.get()) * (*this);
 }
@@ -174,12 +186,12 @@ VarPtr Scalar::operator*(const Matrix & rhs) const {
 //* Return Value: the new scalar or matrix with result of logic function
 //*************************************************************************
 
-VarPtr Scalar::operator<(const Variable & rhs) const {
+VarPtr Scalar::operator<(const Variable & rhs)  {
 	VarPtr to_be_checked = rhs.Copy();
 	return *(to_be_checked.get()) > (*this);
 }
 
-VarPtr Scalar::operator<(const Scalar & rhs) const {
+VarPtr Scalar::operator<(const Scalar & rhs)  {
 	if (val_ < rhs.val_)
         return VarPtr(new Scalar(1));
 
@@ -187,7 +199,7 @@ VarPtr Scalar::operator<(const Scalar & rhs) const {
 
 }
 
-VarPtr Scalar::operator<(const Matrix & rhs) const {
+VarPtr Scalar::operator<(const Matrix & rhs)  {
 	VarPtr logic_answer = rhs.Copy();
 	return *(logic_answer.get()) > (*this);
 }
@@ -202,19 +214,19 @@ VarPtr Scalar::operator<(const Matrix & rhs) const {
 //* Return Value: the new scalar or matrix with result of logic function
 //*************************************************************************
 
-VarPtr Scalar::operator>(const Variable & rhs) const {
+VarPtr Scalar::operator>(const Variable & rhs)  {
 	VarPtr to_be_checked = rhs.Copy();
 	return *(to_be_checked.get()) < (*this);
 }
 
-VarPtr Scalar::operator>(const Scalar & rhs) const {
+VarPtr Scalar::operator>(const Scalar & rhs)  {
     if (val_ > rhs.val_)
         return VarPtr(new Scalar(1));
 
     return VarPtr(new Scalar(0));
 }
 
-VarPtr Scalar::operator>(const Matrix & rhs) const {
+VarPtr Scalar::operator>(const Matrix & rhs)  {
 	VarPtr logic_answer = rhs.Copy();
 	return *(logic_answer.get()) < (*this);
 }
@@ -229,12 +241,12 @@ VarPtr Scalar::operator>(const Matrix & rhs) const {
 //* Return Value: the new scalar or matrix with result of logic function
 //*************************************************************************
 
-VarPtr Scalar::operator==(const Variable & rhs) const {
+VarPtr Scalar::operator==(const Variable & rhs)  {
 	VarPtr to_be_checked = rhs.Copy();
 	return *(to_be_checked.get()) == (*this);
 }
 
-VarPtr Scalar::operator==(const Scalar & rhs) const {
+VarPtr Scalar::operator==(const Scalar & rhs)  {
 	if (val_ == rhs.val_)
         return VarPtr(new Scalar(1));
 
@@ -242,7 +254,7 @@ VarPtr Scalar::operator==(const Scalar & rhs) const {
 
 }
 
-VarPtr Scalar::operator==(const Matrix & rhs) const {
+VarPtr Scalar::operator==(const Matrix & rhs)  {
 	VarPtr logic_answer = rhs.Copy();
 	return *(logic_answer.get()) == (*this);
 }
@@ -257,13 +269,13 @@ VarPtr Scalar::operator==(const Matrix & rhs) const {
 //* Return Value: the new scalar or matrix with result of logic function
 //*************************************************************************
 
-VarPtr Scalar::operator&&(const Variable & rhs) const {
+VarPtr Scalar::operator&&(const Variable & rhs)  {
 	VarPtr to_be_checked = rhs.Copy();
 	return *(to_be_checked.get()) && (*this);
 
 }
 
-VarPtr Scalar::operator&&(const Scalar & rhs) const {
+VarPtr Scalar::operator&&(const Scalar & rhs)  {
 	if ((val_ == 1) && (rhs.val_ == 1))
 		return VarPtr(new Scalar(1));
 
@@ -271,7 +283,7 @@ VarPtr Scalar::operator&&(const Scalar & rhs) const {
 
 }
 
-VarPtr Scalar::operator&&(const Matrix & rhs) const {
+VarPtr Scalar::operator&&(const Matrix & rhs)  {
 	throw BAD_INPUT;
 }
 
@@ -285,12 +297,12 @@ VarPtr Scalar::operator&&(const Matrix & rhs) const {
 //* Return Value: the new scalar or matrix with result of logic function
 //*************************************************************************
 
-VarPtr Scalar::operator||(const Variable & rhs) const {
+VarPtr Scalar::operator||(const Variable & rhs)  {
 	VarPtr to_be_checked = rhs.Copy();
 	return *(to_be_checked.get()) || (*this);
 }
 
-VarPtr Scalar::operator||(const Scalar & rhs) const {
+VarPtr Scalar::operator||(const Scalar & rhs)  {
 	if ((val_ == 0) && (rhs.val_ == 0))
         return VarPtr(new Scalar(0));
 
@@ -298,7 +310,7 @@ VarPtr Scalar::operator||(const Scalar & rhs) const {
 
 }
 
-VarPtr Scalar::operator||(const Matrix & rhs) const {
+VarPtr Scalar::operator||(const Matrix & rhs)  {
 	throw BAD_INPUT;
 }
 
@@ -325,18 +337,11 @@ int & Scalar::operator[](IdxVec v) {
 	return val_;
 }
 
-const int & Scalar::operator[](int idx) const{
-	if (idx != 1)
-		throw INDEX_OUT_OF_RANGE;
-
-	return val_;
-
-}
-
-const int & Scalar::operator[](IdxVec v) const {
+int & Scalar::operator[](IdxVec v) const {
 	if ((v[0] != 1) && (v[1] != 1))
 		throw INDEX_OUT_OF_RANGE;
-	return val_;
+	int i = val_;
+	return i;
 }
 
 

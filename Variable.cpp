@@ -43,3 +43,27 @@ IdxVec operator+(const IdxVec& lhs, const IdxVec& rhs)
 }
 
 Variable::~Variable() {}
+
+//*************************************************************************
+//* Function name: getVal
+//* Description: default func to get value of variable
+//* Parameters: 
+//* Return Value:  0
+//*************************************************************************
+
+int Variable::getValue() const
+{
+	return 0;
+}
+
+//*************************************************************************
+//* Function name: getMat
+//* Description: default func to get pointer for matrix
+//* Parameters: 
+//* Return Value:  nullptr
+//*************************************************************************
+
+int ** Variable::getMatrix() const
+{
+	return nullptr;
+}

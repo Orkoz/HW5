@@ -36,19 +36,20 @@ public:
 	//* Return Value:  none.
 	//*************************************************************************
 
+
 	ScriptException(string definition_string)
 	{
 		char* exception_definition_ = new char[definition_string.length() + 1];
 		strcpy(exception_definition_, definition_string.c_str());
 	}
-//	ScriptException(char* definition_string)
-//	{
-//		char* exception_definition_ = new char[strlen(definition_string) + 1];
-//		strcpy(exception_definition_, definition_string);
-//	}
+	ScriptException(char* definition_string)
+	{
+		char* exception_definition_ = new char[strlen(definition_string) + 1];
+		strcpy(exception_definition_, definition_string);
+	}
 	~ScriptException() throw ()
 	{
-		delete[] exception_definition_;
+		delete[] exception_definition_;		
 	}
 
 	//*************************************************************************
