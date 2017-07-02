@@ -1,8 +1,8 @@
 #pragma once
 #ifndef _MY_SHARED_PTR_H_
 #define _MY_SHARED_PTR_H_
-#include<ostream>
-#include "Variable.h"
+
+
 
 
 //*************************************************************************
@@ -47,7 +47,7 @@ MySharedPtr<C>::MySharedPtr(){
 
 template <class C>
 MySharedPtr<C>::MySharedPtr(C* value): value_(value){
-    counter_ = new int;
+	counter_ = new int;
     (*counter_) = 1;
 }
 
@@ -61,7 +61,7 @@ MySharedPtr<C>::MySharedPtr(C* value): value_(value){
 //*************************************************************************
 
 template <class C>
-MySharedPtr<C>::MySharedPtr(const MySharedPtr<C>& org_obj): value_(org_obj.value_), counter_(counter_=org_obj.counter_){
+MySharedPtr<C>::MySharedPtr(const MySharedPtr<C>& org_obj): value_(org_obj.value_), counter_(org_obj.counter_){
     (*counter_)++;
 }
 
