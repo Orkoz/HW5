@@ -35,9 +35,10 @@ Matrix::Matrix(int row, int col, int val) : row_(row), col_(col){
 Matrix::Matrix(int startVal, int endVal) : row_(1), col_ (endVal - startVal + 1) {
 	matrix_ = new int*[row_];
 	int val = startVal;
-	for (int i = 0; i < row_; i++, val++) {
-		matrix_[i] = new int[col_];
-		matrix_[row_][i] = val;
+	matrix_[0] = new int[col_];
+	for (int i = 0; i < col_; i++) {
+		matrix_[0][i] = val;
+		val++;
 	}
 }
 
@@ -248,21 +249,19 @@ int& Matrix::operator[](int idx) {
 	if ((col_*row_) < idx || idx < 1){
 		throw INDEX_OUT_OF_RANGE;
 	}
-	int row = row_ / idx; // row_ mod idx;
-	int col = idx - row*col_ - 1;
-	return matrix_[row][col];
-
+	int index_count = 0;
+	for (int i = 0; i < col_; i++)
+	{
+		for (int j = 0; j < row_; j++)
+		{
+			if (index_count == (idx - 1))
+				return matrix_[j][i];
+			index_count++;
+		}
+	}
 }
 
-//const int& Matrix::operator[](int idx) const {
-//    if ((col_*row_) < idx || idx < 1){
-//        throw INDEX_OUT_OF_RANGE;
-//    }
-//    int row = row_ / idx; // row_ mod idx;
-//    int col = idx - row*col_ - 1;
-//    return matrix_[row][col];
-//
-//}
+
 
 
 //*************************************************************************
@@ -337,7 +336,7 @@ VarPtr Matrix::operator+(const Matrix& matrix) {
 
 VarPtr Matrix::operator*(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
-    return *(new_obj.get()) + *this;
+    return *(new_obj.get()) * *this;
 }
 VarPtr Matrix::operator*(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
@@ -356,7 +355,7 @@ VarPtr Matrix::operator*(const Matrix& matrix) {
         for (int i = 0; i <  matrix.col_; i++) {
             int mul_sum = 0;
             for (int j = 0; j < col_; j++)
-                mul_sum = mul_sum + matrix_[k][j] + matrix.matrix_[j][i];
+                mul_sum = mul_sum + matrix_[k][j] * matrix.matrix_[j][i];
             new_matrix->matrix_[k][i] = mul_sum;
         }
     }
@@ -377,13 +376,13 @@ VarPtr Matrix::operator*(const Matrix& matrix) {
 
 VarPtr Matrix::operator<(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
-    return *(new_obj.get()) + *this;
+    return *(new_obj.get()) > *this;
 }
 VarPtr Matrix::operator<(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]<scalar.getValue());
+            new_matrix->matrix_[i][j] = (matrix_[i][j] < scalar.getValue());
 
     return VarPtr(new_matrix);
 }
@@ -394,7 +393,7 @@ VarPtr Matrix::operator<(const Matrix& matrix) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (matrix_[i][j] < matrix.matrix_[i][j]);
+            new_matrix->matrix_[i][j] = (matrix_[i][j] < matrix.matrix_[i][j]);
 
     return VarPtr(new_matrix);
 }
@@ -412,13 +411,13 @@ VarPtr Matrix::operator<(const Matrix& matrix) {
 
 VarPtr Matrix::operator>(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
-    return *(new_obj.get()) + *this;
+    return *(new_obj.get()) < *this;
 }
 VarPtr Matrix::operator>(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]>scalar.getValue());
+            new_matrix->matrix_[i][j] = (matrix_[i][j] > scalar.getValue());
 
     return VarPtr(new_matrix);
 }
@@ -429,7 +428,7 @@ VarPtr Matrix::operator>(const Matrix& matrix) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (matrix_[i][j] > matrix.matrix_[i][j]);
+            new_matrix->matrix_[i][j] = (matrix_[i][j] > matrix.matrix_[i][j]);
 
     return VarPtr(new_matrix);
 }
@@ -447,13 +446,13 @@ VarPtr Matrix::operator>(const Matrix& matrix) {
 
 VarPtr Matrix::operator==(const Variable& variable) {
     VarPtr new_obj = variable.Copy();
-    return *(new_obj.get()) + *this;
+    return *(new_obj.get()) == *this;
 }
 VarPtr Matrix::operator==(const Scalar& scalar) {
     Matrix* new_matrix = new Matrix(row_, col_, 0);
     for (int i = 0; i < row_; i++)
         for (int j = 0; j < col_; j++)
-            new_matrix->matrix_[j][i] = (int)(matrix_[i][j]==scalar.getValue());
+            new_matrix->matrix_[j][i] = (matrix_[i][j]==scalar.getValue());
 
     return VarPtr(new_matrix);
 }
@@ -504,4 +503,5 @@ VarPtr Matrix::operator||(const Scalar& scalar) {
 VarPtr Matrix::operator||(const Matrix& matrix) {
     throw BAD_INPUT;
 }
+
 
